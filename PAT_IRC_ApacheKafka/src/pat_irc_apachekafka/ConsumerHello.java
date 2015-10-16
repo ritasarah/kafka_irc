@@ -7,7 +7,7 @@ package pat_irc_apachekafka;
 
 /**
  *
- * @author nim_13512009
+ * @author Rita Sarah & Andarias Silvanus
  */
 
 import java.io.UnsupportedEncodingException;
@@ -30,29 +30,32 @@ import kafka.message.MessageAndOffset;
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
+import static pat_irc_apachekafka.PAT_IRC_ApacheKafka.TOPIC;
 
 
 /**
  * Created by user on 8/4/14.
  */
 public class ConsumerHello extends  Thread {
-    final static String clientId = "SimpleConsumerDemoClient";
-    final static String TOPIC = "test";
+    final static String clientId = "SimpleConsumerDemoClient12";
     ConsumerConnector consumerConnector;
 
 
     public static void main(String[] argv) throws UnsupportedEncodingException {
-        ConsumerHello helloKafkaConsumer = new ConsumerHello();
+        Random rand = new Random();
+        String id= Integer.toString((int) rand.nextInt(50) + 1);
+        
+        ConsumerHello helloKafkaConsumer = new ConsumerHello(id);
         helloKafkaConsumer.start();
     }
 
-    public ConsumerHello(){
+    public ConsumerHello(String id){
         Properties props = new Properties();
         props.put("zookeeper.connect","localhost:2181");
-        props.put("group.id","test-group-rita");
+        props.put("group.id","test-group-"+id);
 //        props.put("zookeeper.session.timeout.ms", "400");
 //        props.put("zookeeper.sync.time.ms", "200");
-//        props.put("auto.commit.interval.ms", "1000");
+        props.put("auto.commit.interval.ms", "1000");
 //        props.put("consumer.timeout.ms","2000");
         props.put("auto.offset.reset","smallest");
         ConsumerConfig consumerConfig = new ConsumerConfig(props);
@@ -67,9 +70,14 @@ public class ConsumerHello extends  Thread {
         KafkaStream<byte[], byte[]> stream =  consumerMap.get(TOPIC).get(0);
         ConsumerIterator<byte[], byte[]> it = stream.iterator();
         System.out.println("waiting for messages...");
-        while(it.hasNext())
+        while(it.hasNext()){
             System.out.println(new String(it.next().message()));
+        }
 
+    }
+    
+    public static void setNickname(){
+    
     }
 
     private static void printMessages(ByteBufferMessageSet messageSet) throws UnsupportedEncodingException {
