@@ -183,6 +183,8 @@ public class PAT_IRC_ApacheKafka {
 	NICKNAME = uname;
     }
     
+    /*Benerin properties.put nya */
+    //Hapus nama lama
     public static void setNickname(String nick){
         properties.put("metadata.broker.list","localhost:9092");
         properties.put("serializer.class","kafka.serializer.StringEncoder");
@@ -197,20 +199,21 @@ public class PAT_IRC_ApacheKafka {
     }
     
     public static void joinChannel(String channel){
-        properties.put("metadata.broker.list","localhost:9092");
-        properties.put("serializer.class","kafka.serializer.StringEncoder");
-        properties.put("auto.create.topics.enable","true");
-        ProducerConfig producerConfig = new ProducerConfig(properties);
-
-        kafka.javaapi.producer.Producer<String,String> producer = new kafka.javaapi.producer.Producer<String, String>(producerConfig);
-
-        KeyedMessage<String, String> kmessage =new KeyedMessage<String, String>("CHANNEL",channel);
-        producer.send(kmessage);
-        producer.close();
+        listChannel.add(channel);
+//        properties.put("metadata.broker.list","localhost:9092");
+//        properties.put("serializer.class","kafka.serializer.StringEncoder");
+//        properties.put("auto.create.topics.enable","true");
+//        ProducerConfig producerConfig = new ProducerConfig(properties);
+//
+//        kafka.javaapi.producer.Producer<String,String> producer = new kafka.javaapi.producer.Producer<String, String>(producerConfig);
+//
+//        KeyedMessage<String, String> kmessage =new KeyedMessage<String, String>(TOPIC,channel);
+//        producer.send(kmessage);
+//        producer.close();
     }
     
     public static void leaveChannel(String channel){
-    
+     //ini ngapain ya 
     }
     
     public static void sendMessage(String channel ,String message){

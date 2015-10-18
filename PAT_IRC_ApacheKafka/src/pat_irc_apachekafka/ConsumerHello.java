@@ -61,8 +61,15 @@ public class ConsumerHello extends Thread {
         ConsumerConfig consumerConfig = new ConsumerConfig(props);
         consumerConnector = Consumer.createJavaConsumerConnector(consumerConfig);
     }
+<<<<<<< HEAD
     
     private ConsumerIterator<byte[], byte[]> getStream(String topic_) {
+=======
+
+    @Override
+    public void run() {
+        
+>>>>>>> 2df8c89631c41353805635662231e0391c6ad3b7
         Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
         topicCountMap.put(TOPIC, new Integer(1));
         Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = consumerConnector.createMessageStreams(topicCountMap);
@@ -87,6 +94,7 @@ public class ConsumerHello extends Thread {
                 System.out.println("nickname terekstrak:" + nickname);
                 setNickname(nickname);
             }
+            
         }
         
         for (int i=0; i<PAT_IRC_ApacheKafka.listChannel.size(); i++) {
@@ -124,6 +132,8 @@ public class ConsumerHello extends Thread {
             System.out.println("listNick kosong");
     }
 
+
+    
     private static void printMessages(ByteBufferMessageSet messageSet) throws UnsupportedEncodingException {
         for(MessageAndOffset messageAndOffset: messageSet) {
             ByteBuffer payload = messageAndOffset.message().payload();
