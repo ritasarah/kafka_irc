@@ -29,12 +29,12 @@ import kafka.producer.ProducerConfig;
  * @author Andarias Silvanus & Rita Sarah
  */
 public class PAT_IRC_ApacheKafka {
-    final static String TOPIC = "topic";
+    final static String TOPIC = "topiKK";
     private static String NICKNAME;
     private static String HOST = "localhost";
     public static ArrayList<String> listNick;
     public static ArrayList<String> listChannel;
-    
+    private static ConsumerHello channelConsumer;
     public static Properties properties;
     
     kafka.javaapi.producer.Producer<String,String> producer;
@@ -49,35 +49,37 @@ public class PAT_IRC_ApacheKafka {
         properties.put("auto.create.topics.enable","true");
         
         ProducerConfig producerConfig = new ProducerConfig(properties);
-        
-        Runnable main_thread = new Runnable() {
-                @Override
-                public void run() {
-                    Scanner input = new Scanner(System.in);
-                    String mode = "", channelName = "", msg = "";
+        listNick = new ArrayList<String>();
+        listChannel = new ArrayList<String>();
+//        listChannel.add("abc");
                     
-                    // Mode list
-                    System.out.println("Ketik '/NICK nickname_baru' untuk mengganti nickname Anda");
-                    System.out.println("Ketik '/JOIN nama_channel_tujuan' untuk bergabung ke channel tujuan");
-                    System.out.println("Ketik '/LEAVE nama_channel' untuk meninggalkan channel tertentu");
-                    System.out.println("Ketik apapun untuk mengirim pesan Anda secara broadcast");
-                    System.out.println("Kirim pesan ke channel tertentu dengan mengetik @nama_channel dan dilanjutkan dengan pesan Anda");
-                    System.out.println("Ketik '/EXIT' untuk keluar dari program\n");
-
-                    System.out.println("producer");
-                    listNick = new ArrayList<String>();
-                    listChannel = new ArrayList<String>();
-                    
-                    // Set username
+        Runnable main_thread;
+        main_thread = new Runnable() {
+            @Override
+            public void run() {
+                Scanner input = new Scanner(System.in);
+                String mode = "", channelName = "", msg = "";
+                
+                // Mode list
+                System.out.println("Ketik '/NICK nickname_baru' untuk mengganti nickname Anda");
+                System.out.println("Ketik '/JOIN nama_channel_tujuan' untuk bergabung ke channel tujuan");
+                System.out.println("Ketik '/LEAVE nama_channel' untuk meninggalkan channel tertentu");
+                System.out.println("Ketik apapun untuk mengirim pesan Anda secara broadcast");
+                System.out.println("Kirim pesan ke channel tertentu dengan mengetik @nama_channel dan dilanjutkan dengan pesan Anda");
+                System.out.println("Ketik '/EXIT' untuk keluar dari program\n");
+                
+                System.out.println("producer");
+                
+                // Set username
+                generateUname();
+                while (listNick.contains(NICKNAME))
                     generateUname();
-                    while (listNick.contains(NICKNAME))
-                        generateUname();
-                    setNickname("NICK:" + NICKNAME);
-
-                    kafka.javaapi.producer.Producer<String,String> producer = new kafka.javaapi.producer.Producer<String, String>(producerConfig);
-                    SimpleDateFormat sdf = new SimpleDateFormat();
-                    KeyedMessage<String, String> kmessage =new KeyedMessage<String, String>(TOPIC,"Test message from java program " + sdf.format(new Date()));
-                    producer.send(kmessage);
+                setNickname("NICK:" + NICKNAME);
+                
+                kafka.javaapi.producer.Producer<String,String> producer = new kafka.javaapi.producer.Producer<String, String>(producerConfig);
+//                    SimpleDateFormat sdf = new SimpleDateFormat();
+//                    KeyedMessage<String, String> kmessage =new KeyedMessage<String, String>(TOPIC,"Test message from java program " + sdf.format(new Date()));
+//                    producer.send(kmessage);
                     
                 // Operation
                 boolean stopper = false;
@@ -100,7 +102,13 @@ public class PAT_IRC_ApacheKafka {
                     else if (mode.equals("/JOIN")) {
                         String newChannel = input.next();
                         if (!listChannel.contains(newChannel)) {
-                            listChannel.add(newChannel);
+                            Random rand = new Random();
+                            String id= Integer.toString((int) rand.nextInt(5000000) + 1);
+                            channelConsumer = new ConsumerHello(NICKNAME + id);
+                            channelConsumer.modeConsumer = true;
+                            channelConsumer.channelName = newChannel;
+                            channelConsumer.start();
+                            
                             joinChannel(newChannel);
                             System.out.println("Anda sudah berhasil bergabung di channel '"+newChannel+"'!");
                         }
@@ -110,7 +118,7 @@ public class PAT_IRC_ApacheKafka {
                     else if (mode.equals("/GET")) {
                         System.out.println("Username Anda: " + NICKNAME);
                     }
-                    else if (mode.equals("/PRINT")) {
+                    else if (mode.equals("/PRINT_NICK")) {
                         if (!listNick.isEmpty()) {
                             System.out.println("isi listNick:");
                             for (int i=0; i<listNick.size(); i++)
@@ -118,6 +126,15 @@ public class PAT_IRC_ApacheKafka {
                         }
                         else
                             System.out.println("listNick kosong");
+                    }
+                    else if (mode.equals("/PRINT_CHANNEL")) {
+                        if (!listChannel.isEmpty()) {
+                            System.out.println("isi listChannel:");
+                            for (int i=0; i<listChannel.size(); i++)
+                                System.out.println(listChannel.get(i));
+                        }
+                        else
+                            System.out.println("listChannel kosong");
                     }
                     else if (mode.equals("/LEAVE")) {
                         String channeLeave = input.next();
@@ -161,10 +178,11 @@ public class PAT_IRC_ApacheKafka {
                 public void run() {
                     System.out.println("Consumer");
                     Random rand = new Random();
-                    String id= Integer.toString((int) rand.nextInt(50) + 1);
+                    String id= Integer.toString((int) rand.nextInt(5000000) + 1);
                     
                     ConsumerHello helloKafkaConsumer = new ConsumerHello(id);
 //                    ConsumerHello helloKafkaConsumer = new ConsumerHello(NICKNAME);
+                    helloKafkaConsumer.modeConsumer = false;
                     helloKafkaConsumer.start();
                 }
         };
@@ -207,19 +225,20 @@ public class PAT_IRC_ApacheKafka {
 //
 //        kafka.javaapi.producer.Producer<String,String> producer = new kafka.javaapi.producer.Producer<String, String>(producerConfig);
 //
-//        KeyedMessage<String, String> kmessage =new KeyedMessage<String, String>(TOPIC,channel);
+//        KeyedMessage<String, String> kmessage =new KeyedMessage<String, String>(TOPIC,"JOIN:"+channel);
 //        producer.send(kmessage);
 //        producer.close();
     }
     
     public static void leaveChannel(String channel){
-     //ini ngapain ya 
+         //ini ngapain ya 
+        listChannel.remove(channel);
     }
     
     public static void sendMessage(String channel ,String message){
+        properties.put("auto.create.topics.enable","true");
         properties.put("metadata.broker.list","localhost:9092");
         properties.put("serializer.class","kafka.serializer.StringEncoder");
-        properties.put("auto.create.topics.enable","true");
         ProducerConfig producerConfig = new ProducerConfig(properties);
 
         kafka.javaapi.producer.Producer<String,String> producer = new kafka.javaapi.producer.Producer<String, String>(producerConfig);
