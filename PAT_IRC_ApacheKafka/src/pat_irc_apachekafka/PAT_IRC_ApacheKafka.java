@@ -68,8 +68,6 @@ public class PAT_IRC_ApacheKafka {
                 System.out.println("Kirim pesan ke channel tertentu dengan mengetik @nama_channel dan dilanjutkan dengan pesan Anda");
                 System.out.println("Ketik '/EXIT' untuk keluar dari program\n");
                 
-                System.out.println("producer");
-                
                 // Set username
                 generateUname();
                 while (listNick.contains(NICKNAME))
@@ -88,6 +86,7 @@ public class PAT_IRC_ApacheKafka {
                     if (mode.equals("/EXIT")) {
                         stopper = true;
                         producer.close();
+                        System.exit(0);
                     }
                     else if (mode.equals("/NICK")) {
                         String nicknameTMP = input.next();
@@ -176,7 +175,6 @@ public class PAT_IRC_ApacheKafka {
         Runnable cons = new Runnable() {
                 @Override
                 public void run() {
-                    System.out.println("Consumer");
                     Random rand = new Random();
                     String id= Integer.toString((int) rand.nextInt(5000000) + 1);
                     

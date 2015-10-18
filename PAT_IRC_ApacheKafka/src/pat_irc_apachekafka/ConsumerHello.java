@@ -82,7 +82,7 @@ public class ConsumerHello extends Thread {
 
         if (!modeConsumer) {
             ConsumerIterator<byte[], byte[]> it = getStream (TOPIC);
-            System.out.println("waiting for messages...");
+//            System.out.println("waiting for messages...");
             while(it.hasNext()) {
                 String message = new String(it.next().message());
     //            System.out.println(message);
