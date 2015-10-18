@@ -36,7 +36,7 @@ import static pat_irc_apachekafka.PAT_IRC_ApacheKafka.TOPIC;
 /**
  * Created by user on 8/4/14.
  */
-public class ConsumerHello extends  Thread {
+public class ConsumerHello extends Thread {
     final static String clientId = "SimpleConsumerDemoClient12";
     ConsumerConnector consumerConnector;
 
@@ -71,13 +71,44 @@ public class ConsumerHello extends  Thread {
         ConsumerIterator<byte[], byte[]> it = stream.iterator();
         System.out.println("waiting for messages...");
         while(it.hasNext()){
-            System.out.println(new String(it.next().message()));
+            String message = new String(it.next().message());
+            System.out.println(message);
+            String tmp = message;
+            int idx = getIdxMark (tmp);
+            String mode = tmp.substring(0, idx);
+            System.out.println("isi ekstrak mode:" + mode);
+            if (mode.equals("NICK")) {
+                String nickname = tmp.substring(idx+1, tmp.length());
+                System.out.println("nickname terekstrak:" + nickname);
+                setNickname(nickname);
+            }
         }
-
     }
     
-    public static void setNickname(){
+    public int getIdxMark (String target) {
+        char tmp;
+        int i=0;
+        boolean stopper = false;
+        while ((i<target.length()) && (!stopper)) {
+            tmp = target.charAt(i);
+            if (tmp == ':')
+                stopper = true;
+            else
+                i++;
+        }
+        return i;
+    }
     
+    public static void setNickname(String nickname){
+        PAT_IRC_ApacheKafka.listNick.add(nickname);
+        System.out.println("succesfully add to list nick!");
+        if (!PAT_IRC_ApacheKafka.listNick.isEmpty()) {
+            System.out.println("isi listNick:");
+            for (int i=0; i<PAT_IRC_ApacheKafka.listNick.size(); i++)
+                System.out.println(PAT_IRC_ApacheKafka.listNick.get(i));
+        }
+        else
+            System.out.println("listNick kosong");
     }
 
     private static void printMessages(ByteBufferMessageSet messageSet) throws UnsupportedEncodingException {

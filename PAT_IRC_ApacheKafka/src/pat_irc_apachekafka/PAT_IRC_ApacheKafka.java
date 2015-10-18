@@ -29,7 +29,7 @@ import kafka.producer.ProducerConfig;
  * @author Andarias Silvanus & Rita Sarah
  */
 public class PAT_IRC_ApacheKafka {
-    final static String TOPIC = "topik";
+    final static String TOPIC = "topic";
     private static String NICKNAME;
     private static String HOST = "localhost";
     public static ArrayList<String> listNick;
@@ -72,7 +72,7 @@ public class PAT_IRC_ApacheKafka {
                     generateUname();
                     while (listNick.contains(NICKNAME))
                         generateUname();
-                    setNickname(NICKNAME);
+                    setNickname("NICK:" + NICKNAME);
 
                     kafka.javaapi.producer.Producer<String,String> producer = new kafka.javaapi.producer.Producer<String, String>(producerConfig);
                     SimpleDateFormat sdf = new SimpleDateFormat();
@@ -93,7 +93,7 @@ public class PAT_IRC_ApacheKafka {
                             System.out.println("Nickname '" + nicknameTMP + "' sudah terdaftar, silahkan coba dengan username lain");
                         else {
                             NICKNAME = nicknameTMP;
-                            setNickname(NICKNAME);
+                            setNickname("NICK:"+NICKNAME);
                             System.out.println("Ganti nickname berhasil!");
                         }
                     }
@@ -106,6 +106,18 @@ public class PAT_IRC_ApacheKafka {
                         }
                         else
                             System.out.println("Anda sudah tergabung di channel '"+newChannel+"'");
+                    }
+                    else if (mode.equals("/GET")) {
+                        System.out.println("Username Anda: " + NICKNAME);
+                    }
+                    else if (mode.equals("/PRINT")) {
+                        if (!listNick.isEmpty()) {
+                            System.out.println("isi listNick:");
+                            for (int i=0; i<listNick.size(); i++)
+                                System.out.println(listNick.get(i));
+                        }
+                        else
+                            System.out.println("listNick kosong");
                     }
                     else if (mode.equals("/LEAVE")) {
                         String channeLeave = input.next();
@@ -123,14 +135,14 @@ public class PAT_IRC_ApacheKafka {
                             channelName = mode.substring(1, mode.length());
                             msg = input.nextLine();
                             String message = "[" + channelName + "]" + " (" + NICKNAME + ") " + msg;
-                          sendMessage(channelName, message);
+                            sendMessage(channelName, message);
                         }
                         else { // Message to all channel
                             msg = mode + input.nextLine();
                             if (!listChannel.isEmpty()) {
                                 for (String channelTmp : listChannel) {
                                     String message = "[" + channelTmp + "]" + " (" + NICKNAME + ") " + msg;
-                                  sendMessage(channelTmp, message);
+                                    sendMessage(channelTmp, message);
                                 }
                             }
                             else
@@ -152,6 +164,7 @@ public class PAT_IRC_ApacheKafka {
                     String id= Integer.toString((int) rand.nextInt(50) + 1);
                     
                     ConsumerHello helloKafkaConsumer = new ConsumerHello(id);
+//                    ConsumerHello helloKafkaConsumer = new ConsumerHello(NICKNAME);
                     helloKafkaConsumer.start();
                 }
         };
@@ -180,7 +193,7 @@ public class PAT_IRC_ApacheKafka {
 
         kafka.javaapi.producer.Producer<String,String> producer = new kafka.javaapi.producer.Producer<String, String>(producerConfig);
 
-        KeyedMessage<String, String> kmessage =new KeyedMessage<String, String>("NICK",nick);
+        KeyedMessage<String, String> kmessage = new KeyedMessage<String, String>(TOPIC,nick);
         producer.send(kmessage);
         producer.close();
     }
