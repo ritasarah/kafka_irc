@@ -64,6 +64,7 @@ public class ConsumerHello extends Thread {
 
     @Override
     public void run() {
+        
         Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
         topicCountMap.put(TOPIC, new Integer(1));
         Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = consumerConnector.createMessageStreams(topicCountMap);
@@ -82,6 +83,7 @@ public class ConsumerHello extends Thread {
                 System.out.println("nickname terekstrak:" + nickname);
                 setNickname(nickname);
             }
+            
         }
     }
     
@@ -111,6 +113,8 @@ public class ConsumerHello extends Thread {
             System.out.println("listNick kosong");
     }
 
+
+    
     private static void printMessages(ByteBufferMessageSet messageSet) throws UnsupportedEncodingException {
         for(MessageAndOffset messageAndOffset: messageSet) {
             ByteBuffer payload = messageAndOffset.message().payload();
