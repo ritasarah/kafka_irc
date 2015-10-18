@@ -170,6 +170,8 @@ public class PAT_IRC_ApacheKafka {
 	NICKNAME = uname;
     }
     
+    /*Benerin properties.put nya */
+    //Hapus nama lama
     public static void setNickname(String nick){
         properties.put("metadata.broker.list","localhost:9092");
         properties.put("serializer.class","kafka.serializer.StringEncoder");
@@ -197,7 +199,7 @@ public class PAT_IRC_ApacheKafka {
     }
     
     public static void leaveChannel(String channel){
-    
+     //ini ngapain ya 
     }
     
     public static void sendMessage(String channel ,String message){
