@@ -61,14 +61,19 @@ public class ConsumerHello extends Thread {
         ConsumerConfig consumerConfig = new ConsumerConfig(props);
         consumerConnector = Consumer.createJavaConsumerConnector(consumerConfig);
     }
-
-    @Override
-    public void run() {
+    
+    private ConsumerIterator<byte[], byte[]> getStream(String topic_) {
         Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
         topicCountMap.put(TOPIC, new Integer(1));
         Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = consumerConnector.createMessageStreams(topicCountMap);
         KafkaStream<byte[], byte[]> stream =  consumerMap.get(TOPIC).get(0);
         ConsumerIterator<byte[], byte[]> it = stream.iterator();
+        return it;
+    }
+
+    @Override
+    public void run() {
+        ConsumerIterator<byte[], byte[]> it = getStream (TOPIC);
         System.out.println("waiting for messages...");
         while(it.hasNext()){
             String message = new String(it.next().message());
@@ -81,6 +86,14 @@ public class ConsumerHello extends Thread {
                 String nickname = tmp.substring(idx+1, tmp.length());
                 System.out.println("nickname terekstrak:" + nickname);
                 setNickname(nickname);
+            }
+        }
+        
+        for (int i=0; i<PAT_IRC_ApacheKafka.listChannel.size(); i++) {
+            it = getStream (PAT_IRC_ApacheKafka.listChannel.get(i));
+            while(it.hasNext()){
+                String message = new String(it.next().message());
+                System.out.println(message);
             }
         }
     }
