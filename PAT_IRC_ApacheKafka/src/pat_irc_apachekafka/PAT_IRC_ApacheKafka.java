@@ -14,8 +14,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Scanner;
-//import java.util.logging.Level;
-//import java.util.logging.Logger;
 import kafka.consumer.Consumer;
 import kafka.consumer.ConsumerConfig;
 import kafka.consumer.ConsumerIterator;
@@ -51,7 +49,6 @@ public class PAT_IRC_ApacheKafka {
         ProducerConfig producerConfig = new ProducerConfig(properties);
         listNick = new ArrayList<String>();
         listChannel = new ArrayList<String>();
-//        listChannel.add("abc");
                     
         Runnable main_thread;
         main_thread = new Runnable() {
@@ -75,9 +72,6 @@ public class PAT_IRC_ApacheKafka {
                 setNickname("NICK:" + NICKNAME);
                 
                 kafka.javaapi.producer.Producer<String,String> producer = new kafka.javaapi.producer.Producer<String, String>(producerConfig);
-//                    SimpleDateFormat sdf = new SimpleDateFormat();
-//                    KeyedMessage<String, String> kmessage =new KeyedMessage<String, String>(TOPIC,"Test message from java program " + sdf.format(new Date()));
-//                    producer.send(kmessage);
                     
                 // Operation
                 boolean stopper = false;
@@ -114,7 +108,7 @@ public class PAT_IRC_ApacheKafka {
                         else
                             System.out.println("Anda sudah tergabung di channel '"+newChannel+"'");
                     }
-                    else if (mode.equals("/GET")) {
+                    else if (mode.equals("/GET_NICK")) {
                         System.out.println("Username Anda: " + NICKNAME);
                     }
                     else if (mode.equals("/PRINT_NICK")) {
@@ -146,7 +140,6 @@ public class PAT_IRC_ApacheKafka {
                             System.out.println("Anda belum tergabung di channel '"+channeLeave+"'");
                     }
                     else{
-                        //tambahin cek udah join channel tsb belom kalau mau
                         if (mode.charAt(0) == '@') { // Message channel X
                             channelName = mode.substring(1, mode.length());
                             msg = input.nextLine();
@@ -203,8 +196,6 @@ public class PAT_IRC_ApacheKafka {
 	NICKNAME = uname;
     }
     
-    /*Benerin properties.put nya */
-    //Hapus nama lama
     public static void setNickname(String nick){
         properties.put("metadata.broker.list","localhost:9092");
         properties.put("serializer.class","kafka.serializer.StringEncoder");
@@ -220,20 +211,9 @@ public class PAT_IRC_ApacheKafka {
     
     public static void joinChannel(String channel){
         listChannel.add(channel);
-//        properties.put("metadata.broker.list","localhost:9092");
-//        properties.put("serializer.class","kafka.serializer.StringEncoder");
-//        properties.put("auto.create.topics.enable","true");
-//        ProducerConfig producerConfig = new ProducerConfig(properties);
-//
-//        kafka.javaapi.producer.Producer<String,String> producer = new kafka.javaapi.producer.Producer<String, String>(producerConfig);
-//
-//        KeyedMessage<String, String> kmessage =new KeyedMessage<String, String>(TOPIC,"JOIN:"+channel);
-//        producer.send(kmessage);
-//        producer.close();
     }
     
     public static void leaveChannel(String channel){
-         //ini ngapain ya 
         listChannel.remove(channel);
     }
     
