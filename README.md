@@ -17,16 +17,16 @@ File yang kami upload merupakan project NetBeans
 ## Tes yang dilakukan 
 1. tes yang kami lakukan dengan menggunakan 2 client 
 2. mengganti nickname dengan /NICK dan join dengan channel tertentu dengan /JOIN 
-3. Client pertama melakukan /JOIN channel_pat , /JOIN channel_pat2 
+3. Client pertama melakukan /JOIN PatChannel , /JOIN PatChannel2 
 4. Client kedua mengganti nickname dengan nickname yang sama dengan client pertama. Hal ini gagal karena nickname tersebut telah diambil.
-5. Client kedua melakukan /JOIN channel_pat
-6. Client pertama mengirimkan broadcast "test" dan menerima pesan itu dua kali dari channel channel_pat dan channel_pat2 
-7. Client kedua mendapatkan pesan itu dari channel channel_pat
-8. Client pertama mengirimkan pesan @channel_pat test personal 
+5. Client kedua melakukan /JOIN PatChannel
+6. Client pertama mengirimkan broadcast "test" dan menerima pesan itu dua kali dari channel PatChannel dan PatChannel2 
+7. Client kedua mendapatkan pesan itu dari channel PatChannel
+8. Client pertama mengirimkan pesan @PatChannel test personal 
 9. Client kedua mendapatkan pesan test personal dari channel pat_channel 
-10. Client kedua melakukan /LEAVE channel_pat
-11. Client pertama mengirimkan pesan @channel_pat test leave 
-12. Client kedua tidak mendapatkan pesan test di channel pat_channel
-13. Client kedua mengirimkan pesan pada @channel_pat. Pesan tidak terkirim karena client sudah meninggalkan channel tersebut
+10. Client kedua melakukan /LEAVE PatChannel
+11. Client pertama mengirimkan pesan @PatChannel test leave 
+12. Client kedua tidak mendapatkan pesan test di channel PatChannel
+13. Client kedua mengirimkan pesan pada @PatChannel. Pesan tidak terkirim karena client sudah meninggalkan channel tersebut
 
 Hasil pengujian untuk semua butir diatas berhasil

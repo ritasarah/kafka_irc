@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import kafka.consumer.Consumer;
 import kafka.consumer.ConsumerConfig;
 import kafka.consumer.ConsumerIterator;
@@ -45,6 +47,7 @@ public class PAT_IRC_ApacheKafka {
         properties.put("metadata.broker.list","localhost:9092");
         properties.put("serializer.class","kafka.serializer.StringEncoder");
         properties.put("auto.create.topics.enable","true");
+        Map <String, ConsumerHello> channelMap = new HashMap<String, ConsumerHello>() {};
         
         ProducerConfig producerConfig = new ProducerConfig(properties);
         listNick = new ArrayList<String>();
@@ -101,6 +104,7 @@ public class PAT_IRC_ApacheKafka {
                             channelConsumer.modeConsumer = true;
                             channelConsumer.channelName = newChannel;
                             channelConsumer.start();
+                            channelMap.put(newChannel, channelConsumer);
                             
                             joinChannel(newChannel);
                             System.out.println("Anda sudah berhasil bergabung di channel '"+newChannel+"'!");
@@ -134,6 +138,8 @@ public class PAT_IRC_ApacheKafka {
                         if (listChannel.contains(channeLeave)) {
                             listChannel.remove(channeLeave);
                             leaveChannel(channeLeave);
+                            channelMap.get(channeLeave).getConsumerConnector().shutdown();
+                            channelMap.remove(channeLeave);
                             System.out.println("Anda sudah berhasil keluar channel '"+channeLeave+"'!");
                         }
                         else

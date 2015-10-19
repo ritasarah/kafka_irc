@@ -43,11 +43,14 @@ public class ConsumerHello extends Thread {
     public boolean modeConsumer;
     public String channelName;
 
-
+    public ConsumerConnector getConsumerConnector() {
+        return consumerConnector;
+    }
+    
     public static void main(String[] argv) throws UnsupportedEncodingException {
         Random rand = new Random();
         String id= Integer.toString((int) rand.nextInt(50) + 1);
-        
+
         ConsumerHello helloKafkaConsumer = new ConsumerHello(id);
         helloKafkaConsumer.start();
     }

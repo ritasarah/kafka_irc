@@ -27,5 +27,6 @@ File yang kami upload merupakan project NetBeans
 10. Client kedua melakukan /LEAVE channel_pat
 11. Client pertama mengirimkan pesan @channel_pat test leave 
 12. Client kedua tidak mendapatkan pesan test di channel pat_channel
+13. Client kedua mengirimkan pesan pada @channel_pat. Pesan tidak terkirim karena client sudah meninggalkan channel tersebut
 
 Hasil pengujian untuk semua butir diatas berhasil
