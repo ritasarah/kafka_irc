@@ -14,8 +14,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
 import kafka.consumer.Consumer;
 import kafka.consumer.ConsumerConfig;
 import kafka.consumer.ConsumerIterator;
@@ -102,7 +102,7 @@ public class PAT_IRC_ApacheKafka {
                         String newChannel = input.next();
                         if (!listChannel.contains(newChannel)) {
                             Random rand = new Random();
-                            String id= Integer.toString((int) rand.nextInt(5000000) + 1);
+                            String id= Integer.toString((int) rand.nextInt(9999998) + 1);
                             channelConsumer = new ConsumerHello(NICKNAME + id);
                             channelConsumer.modeConsumer = true;
                             channelConsumer.channelName = newChannel;
@@ -150,8 +150,12 @@ public class PAT_IRC_ApacheKafka {
                         if (mode.charAt(0) == '@') { // Message channel X
                             channelName = mode.substring(1, mode.length());
                             msg = input.nextLine();
-                            String message = "[" + channelName + "]" + " (" + NICKNAME + ") " + msg;
-                            sendMessage(channelName, message);
+                            if (listChannel.contains(channelName)) {
+                                String message = "[" + channelName + "]" + " (" + NICKNAME + ") " + msg;
+                                sendMessage(channelName, message);
+                            }
+                            else
+                                System.out.println("Anda belum tergabung di channel '" + channelName +"'");
                         }
                         else { // Message to all channel
                             msg = mode + input.nextLine();
@@ -176,7 +180,7 @@ public class PAT_IRC_ApacheKafka {
                 @Override
                 public void run() {
                     Random rand = new Random();
-                    String id= Integer.toString((int) rand.nextInt(5000000) + 1);
+                    String id= Integer.toString((int) rand.nextInt(9999998) + 1);
                     
                     ConsumerHello helloKafkaConsumer = new ConsumerHello(id);
 //                    ConsumerHello helloKafkaConsumer = new ConsumerHello(NICKNAME);
